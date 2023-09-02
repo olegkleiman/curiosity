@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset = "UTF-8">
+        <link rel = "stylesheet" href="style.css">
+        <title>TLV Search</title>
+    </head>
+    <script>
+        const searchSite = async () => {
+            const response = await fetch('/searchSite', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                }                
+            });
+            const jsonResults = await response.json(); //extract JSON from the http response
+            console.log(jsonResults)
+            document.writeln("<ol>")
+            jsonResults.forEach(element => {
+                document.writeln("<li>" + element.text + "</li>")
+            });
+            document.writeln("</ol>")
+        }
+    </script>
+    <body>
+        <header>
+            <img src="/images/2059ce585bb5406798c3f3e1381feb36.svg" />
+        </header>
+        <br /> <br />
+        <div align="center">
+            <form action="/searchSite" method="POST">
+                <input dir="rtl" name="searchText" id="searchText"
+                        role="combobox" 
+                        type="search" />
+                <br />
+                <br />
+                <button type="submit"
+                    class="searchButton"
+                >חפש באתר</button>
+                <button  type="submit"
+                        class="searchButton">חפש במוקד</button>
+            </form>
+        </div>
+    </body>
+</html>

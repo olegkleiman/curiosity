@@ -1,0 +1,8 @@
+html
+  head
+    title= title
+  body
+  - each item in data
+      p
+        div #{item.text}
+        a(href='#{item.link}', target="_blank") Link

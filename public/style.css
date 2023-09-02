@@ -1,0 +1,42 @@
+body 
+{
+    margin: 0;
+}
+header{
+    text-align: center;
+    height: 76px;
+    background-color: #3399ff;
+    color: #FFFFFF;
+    font-size: x-large;
+}
+h3{
+    margin-top: 2px;
+    text-align: center;
+    background-color: #80bfff;
+}
+form{
+    width: 100%;
+    display: inline-block;
+    margin: 20px;
+    border: none
+}
+footer{
+    margin-top: 3%;
+    text-align: center;
+}
+
+input {
+    height: 32px;
+    width: 40%;
+    border: 1px solid #ccc;
+}
+
+.searchButton {
+    background: #3399ff; 
+    border-radius: 10px; 
+    border: 1px solid #999;
+    box-shadow: 6px 6px 5px; 
+    -webkit-box-shadow: 6px 6px 5px #999; 
+    -moz-box-shadow: 6px 6px 5px #999;
+    font-size: xx-large;
+}
