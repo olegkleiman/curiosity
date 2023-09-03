@@ -1,5 +1,13 @@
 var express = require('express')
 var bodyParser = require('body-parser')
+require('dotenv').config()
+const fetch = require("node-fetch")
+let OpenAI = require('openai');
+
+openAIToken = process.env["OPENAI_API_KEY"]
+const openai = new OpenAI({
+    apiKey: openAIToken
+  });
 
 const port = 3000;
 
@@ -10,9 +18,35 @@ var jsonParser = bodyParser.json()
 
 app.use(express.static('public'))
 
-app.post("/searchSite", (req, res) => {
+async function createEmbedding(input, model="text-embedding-ada-002") {
+    try {
+        const rawResponse = await fetch("https://api.openai.com/v1/embeddings", {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${openAIToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                input,
+                model
+            })
+        })
+        const response = await rawResponse.json()
+        console.log(response.usage)
+
+    } catch(err) {
+        console.error(err)
+    }
+
+}
+
+app.post("/searchSite", async (req, res) => {
 
     let searchText = req.body.searchText;
+
+    createEmbedding({
+        input: searchText
+    })
 
     results = [{
         text: 'aaa',
