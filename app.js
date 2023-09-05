@@ -1,13 +1,17 @@
-var express = require('express')
-var bodyParser = require('body-parser')
-require('dotenv').config()
-const fetch = require("node-fetch")
-let OpenAI = require('openai');
+import express from 'express'
+import bodyParser from 'body-parser'
+import 'dotenv/config'
+import fetch from "node-fetch";
+import OpenAI from 'openai';
+import { config } from './config.js';
+import Database from './database.js';
 
-openAIToken = process.env["OPENAI_API_KEY"]
+const openAIToken = process.env["OPENAI_API_KEY"]
 const openai = new OpenAI({
     apiKey: openAIToken
   });
+
+const database = new Database(config);  
 
 const port = 3000;
 
@@ -20,19 +24,22 @@ app.use(express.static('public'))
 
 async function createEmbedding(input, model="text-embedding-ada-002") {
     try {
+
+        const jsonBody = {
+            input,
+            model
+        }
         const rawResponse = await fetch("https://api.openai.com/v1/embeddings", {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${openAIToken}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
             },
-            body: JSON.stringify({
-                input,
-                model
-            })
+            body: JSON.stringify(jsonBody)
         })
         const response = await rawResponse.json()
-        console.log(response.usage)
+        return response.data[0].embedding;
 
     } catch(err) {
         console.error(err)
@@ -44,19 +51,13 @@ app.post("/searchSite", async (req, res) => {
 
     let searchText = req.body.searchText;
 
-    createEmbedding({
-        input: searchText
-    })
+    let embedding = await createEmbedding(searchText)
 
-    results = [{
-        text: 'aaa',
-        link: 'http://yahoo.com'
-    }, {
-        text: 'bbb',
-        link: 'http://openai.com'
-    }]
+    await database.connect();
+    const distances = await database.execureSP('[dbo].[calculateDistance]',JSON.stringify(embedding));
+    await database.disconnect()
 
-    req.app.set('results', results);
+    req.app.set('results', distances);
     req.app.set('prompt', searchText)
     res.redirect("/searchResults");
 })

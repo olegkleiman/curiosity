@@ -39,4 +39,5 @@ input {
     -webkit-box-shadow: 6px 6px 5px #999; 
     -moz-box-shadow: 6px 6px 5px #999;
     font-size: xx-large;
+    cursor: pointer;
 }
